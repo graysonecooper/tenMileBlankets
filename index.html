@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blanket Color Preview</title>
+
+  <style>
+    :root {
+      --background: #f7f5f0;
+      --text: #292724;
+      --muted: #77736c;
+      --border: #dedbd3;
+      --panel: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: clamp(26px, 4vw, 38px);
+      margin: 0 0 8px;
+      letter-spacing: -0.8px;
+    }
+
+    header p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .preview-panel,
+    .controls-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .preview-panel h2,
+    .controls-panel h2 {
+      font-size: 18px;
+      margin: 0 0 20px;
+    }
+
+    .preview-background {
+      background: #f0eee8;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    #blanket {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .preview-caption {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .color-control {
+      margin-bottom: 22px;
+    }
+
+    .color-control label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .select-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    select {
+      flex: 1;
+      min-width: 0;
+      padding: 12px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid #ccc8bf;
+      border-radius: 7px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .swatch {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border: 1px solid #d0cdc6;
+      border-radius: 7px;
+    }
+
+    .hex-value {
+      display: block;
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: monospace;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px 18px;
+      background: #292724;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.82;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 28px;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding: 24px 14px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .preview-panel,
+      .controls-panel {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header>
+      <h1>Blanket Color Studio</h1>
+      <p>Customize your blanket colors and preview your design.</p>
+    </header>
+
+    <div class="layout">
+
+      <!-- BLANKET PREVIEW -->
+      <section class="preview-panel">
+        <h2>Your Design</h2>
+
+        <div class="preview-background">
+          <svg
+            id="blanket"
+            viewBox="0 0 400 400"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Square blanket with an outer border,
+            an inner border, and a center fill"
+          >
+            <!-- Outer border -->
+            <rect
+              id="outerShape"
+              x="5" y="5"
+              width="390" height="390"
+              fill="#653B36"
+            />
+
+            <!-- Inner border -->
+            <rect
+              id="innerShape"
+              x="55" y="55"
+              width="290" height="290"
+              fill="#B7512C"
+            />
+
+            <!-- Center fill -->
+            <rect
+              id="centerShape"
+              x="105" y="105"
+              width="190" height="190"
+              fill="#653B36"
+            />
+          </svg>
+        </div>
+
+        <p class="preview-caption">
+          Color changes appear instantly.
+        </p>
+      </section>
+
+      <!-- COLOR CONTROLS -->
+      <section class="controls-panel">
+        <h2>Choose Your Colors</h2>
+
+        <div class="color-control">
+          <label for="outerColor">
+            1. Outer Border
+          </label>
+
+          <div class="select-row">
+            <select id="outerColor">
+              <option value="#653B36" selected>Deep Maroon</option>
+              <option value="#292929">Charcoal</option>
+              <option value="#243B53">Navy Blue</option>
+              <option value="#718477">Sage Green</option>
+              <option value="#B7512C">Burnt Orange</option>
+              <option value="#D6A62E">Mustard</option>
+              <option value="#DDA6A1">Dusty Pink</option>
+              <option value="#E8DCC7">Cream</option>
+              <option value="#FFFFFF">White</option>
+            </select>
+
+            <div class="swatch" id="outerSwatch"></div>
+          </div>
+
+          <span class="hex-value" id="outerHex"></span>
+        </div>
+
+        <div class="color-control">
+          <label for="innerColor">
+            2. Inner Border
+          </label>
+
+          <div class="select-row">
+            <select id="innerColor">
+              <option value="#B7512C" selected>Burnt Orange</option>
+              <option value="#653B36">Deep Maroon</option>
+              <option value="#292929">Charcoal</option>
+              <option value="#243B53">Navy Blue</option>
+              <option value="#718477">Sage Green</option>
+              <option value="#D6A62E">Mustard</option>
+              <option value="#DDA6A1">Dusty Pink</option>
+              <option value="#E8DCC7">Cream</option>
+              <option value="#FFFFFF">White</option>
+            </select>
+
+            <div class="swatch" id="innerSwatch"></div>
+          </div>
+
+          <span class="hex-value" id="innerHex"></span>
+        </div>
+
+        <div class="color-control">
+          <label for="centerColor">
+            3. Center Fill
+          </label>
+
+          <div class="select-row">
+            <select id="centerColor">
+              <option value="#653B36" selected>Deep Maroon</option>
+              <option value="#292929">Charcoal</option>
+              <option value="#243B53">Navy Blue</option>
+              <option value="#718477">Sage Green</option>
+              <option value="#B7512C">Burnt Orange</option>
+              <option value="#D6A62E">Mustard</option>
+              <option value="#DDA6A1">Dusty Pink</option>
+              <option value="#E8DCC7">Cream</option>
+              <option value="#FFFFFF">White</option>
+            </select>
+
+            <div class="swatch" id="centerSwatch"></div>
+          </div>
+
+          <span class="hex-value" id="centerHex"></span>
+        </div>
+
+        <button id="resetButton" type="button">
+          Reset Colors
+        </button>
+      </section>
+
+    </div>
+
+    <footer class="footer">
+      Blanket Color Studio · Design Preview
+    </footer>
+
+  </main>
+
+  <script>
+    // Default colors when the page loads or is reset.
+    const defaults = {
+      outer: "#653B36",
+      inner: "#B7512C",
+      center: "#653B36"
+    };
+
+    // Update a shape, its color swatch, and its hex label.
+    function updateColor(name) {
+      const selector = document.getElementById(name + "Color");
+      const color = selector.value;
+
+      document.getElementById(name + "Shape")
+        .setAttribute("fill", color);
+
+      document.getElementById(name + "Swatch")
+        .style.backgroundColor = color;
+
+      document.getElementById(name + "Hex")
+        .textContent = color.toUpperCase();
+    }
+
+    // Listen for changes to all three selectors.
+    ["outer", "inner", "center"].forEach(function(name) {
+      document.getElementById(name + "Color")
+        .addEventListener("change", function() {
+          updateColor(name);
+        });
+
+      // Initialize each color swatch and label.
+      updateColor(name);
+    });
+
+    // Restore all three default colors.
+    document.getElementById("resetButton")
+      .addEventListener("click", function() {
+        Object.keys(defaults).forEach(function(name) {
+          document.getElementById(name + "Color").value =
+            defaults[name];
+
+          updateColor(name);
+        });
+      });
+  </script>
+
+</body>
+</html>

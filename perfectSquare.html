@@ -330,7 +330,7 @@
     }
 
     // Listen for changes to all three selectors.
-    ["outer", "inner", "center"].forEach(function(name) {
+    ["outer", "inner"].forEach(function(name) {
       document.getElementById(name + "Color")
         .addEventListener("change", function() {
           updateColor(name);

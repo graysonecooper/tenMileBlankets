@@ -295,7 +295,7 @@
           <span class="hex-value" id="innerHex"></span>
         </div>
     -->    
-<!--
+
         <div class="color-control">
           <label for="centerColor">
             2. Center Fill
@@ -313,7 +313,7 @@
 
             <div class="swatch" id="centerSwatch"></div>
           </div>
-
+<!--
           <span class="hex-value" id="centerHex"></span>
         </div>
     -->
@@ -333,7 +333,7 @@
       outer: "#653B36",
       inner: "#B7512C"
   //  ,
-  //  center: "#653B36"
+    center: "#653B36"
     };
 
     // Update a shape, its color swatch, and its hex label.
@@ -378,103 +378,106 @@
 const NS = "http://www.w3.org/2000/svg";
 
 const regions = {
-  outer: {
-    clip: "outerClip",
-    x: 5, y: 5, width: 390, height: 390
-  },
-  inner: {
-    clip: "innerClip",
-    x: 55, y: 55, width: 290, height: 290
-  },
-  center: {
-    clip: "centerClip",
-    x: 105, y: 105, width: 190, height: 190
-  }
+  outer: { clip: "outerClip", x: 5, y: 5, width: 390, height: 390 },
+  inner: { clip: "innerClip", x: 55, y: 55, width: 290, height: 290 },
+  center: { clip: "centerClip", x: 105, y: 105, width: 190, height: 190 }
 };
 
-// Generate a single serpentine path, moving row by row.
-// The clipping path hides portions outside the selected region.
-function makePencilPath(region, spacing = 4, wobble = 1.5) {
+// Creates a continuous, diagonal, back-and-forth pencil stroke.
+// Each short segment gets its own subtly varying stroke width.
+function makePencilPoints(region) {
   const { x, y, width, height } = region;
+
   const points = [];
+  const spacing = 3.2;
+  const samples = 5;
+  const diagonalSlope = 0.32;
   const rows = Math.ceil(height / spacing);
 
   for (let row = 0; row <= rows; row++) {
-    const py = y + Math.min(row * spacing, height);
-    const direction = row % 2 === 0 ? 1 : -1;
+    const baseY = y + row * spacing;
+    const forward = row % 2 === 0;
 
-    // Slightly irregular pencil strokes.
-    const samples = Math.ceil(width / 5);
+    for (let j = 0; j <= width / samples; j++) {
+      const t = j / (width / samples);
+      const px = x + (forward ? t : 1 - t) * width;
 
-    for (let j = 0; j <= samples; j++) {
-      const t = j / samples;
-      const actualT = direction === 1 ? t : 1 - t;
+      // A diagonal sweep with subtle hand-drawn waviness.
+      const py =
+        baseY +
+        (px - x) * diagonalSlope +
+        Math.sin(px * 0.11 + row * 1.7) * 0.8 +
+        Math.sin(px * 0.035 + row * 0.9) * 0.65;
 
-      const px = x + actualT * width;
-      const wave = Math.sin(actualT * Math.PI * 18 + row * 0.8)
-                   * wobble;
-
-      points.push([px, py + wave]);
+      points.push({ x: px, y: py });
     }
   }
 
-  if (!points.length) return "";
-
-  return points.map((p, i) =>
-    `${i === 0 ? "M" : "L"} ${p[0].toFixed(2)} ${p[1].toFixed(2)}`
-  ).join(" ");
+  return points;
 }
 
 function drawRegion(name, color) {
   const layer = document.getElementById("pencilLayer");
-
-  // Remove only this region's previous drawing.
   const previous = layer.querySelector(`[data-region="${name}"]`);
-  if (previous) previous.remove();
 
-  // Blank means white paper: no pencil marks.
+  if (previous) previous.remove();
   if (!color) return;
 
   const region = regions[name];
+  const points = makePencilPoints(region);
 
   const group = document.createElementNS(NS, "g");
   group.setAttribute("data-region", name);
+
+  // Hard boundary: no visible pencil marks can enter another section.
   group.setAttribute("clip-path", `url(#${region.clip})`);
 
-  const path = document.createElementNS(NS, "path");
-  path.setAttribute("d", makePencilPath(region));
-  path.setAttribute("fill", "none");
-  path.setAttribute("stroke", color);
-  path.setAttribute("stroke-width", "1.7");
-  path.setAttribute("stroke-linecap", "round");
-  path.setAttribute("stroke-linejoin", "round");
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1];
+    const b = points[i];
 
-  group.appendChild(path);
+    const segment = document.createElementNS(NS, "path");
+    segment.setAttribute(
+      "d",
+      `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} L ${b.x.toFixed(2)} ${b.y.toFixed(2)}`
+    );
+    segment.setAttribute("fill", "none");
+    segment.setAttribute("stroke", color);
+
+    // Vary thickness gradually to mimic pressure from a colored pencil.
+    const pressure =
+      1.35 +
+      Math.sin(i * 0.17) * 0.28 +
+      Math.sin(i * 0.047 + 1.4) * 0.22 +
+      Math.sin(i * 0.013) * 0.15;
+
+    segment.setAttribute("stroke-width", pressure.toFixed(2));
+    segment.setAttribute("stroke-linecap", "round");
+    segment.setAttribute("stroke-linejoin", "round");
+    segment.setAttribute("opacity", "0.82");
+
+    group.appendChild(segment);
+  }
+
   layer.appendChild(group);
 }
 
-// Connect your existing dropdowns to the drawing.
 function updatePencil(name, selectorId) {
   const color = document.getElementById(selectorId).value;
   drawRegion(name, color);
 }
 
-document.getElementById("outerColor").addEventListener("change", () => {
-  updatePencil("outer", "outerColor");
-});
+document.getElementById("outerColor").addEventListener("change", () =>
+  updatePencil("outer", "outerColor")
+);
 
-document.getElementById("innerColor").addEventListener("change", () => {
-  updatePencil("inner", "innerColor");
-});
+document.getElementById("innerColor").addEventListener("change", () =>
+  updatePencil("inner", "innerColor")
+);
 
-document.getElementById("centerColor").addEventListener("change", () => {
-  updatePencil("center", "centerColor");
-});
-
-// Start with blank paper.
-drawRegion("outer", "");
-drawRegion("inner", "");
-drawRegion("center", "");
+document.getElementById("centerColor").addEventListener("change", () =>
+  updatePencil("center", "centerColor")
+);
 
   </script>
 

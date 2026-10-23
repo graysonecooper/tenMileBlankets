@@ -203,320 +203,60 @@
 
 
 
+
 <div class="preview-background">
   <svg
     id="blanket"
     viewBox="0 0 400 400"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
-    aria-label="Hand-sketched blanket with two borders"
+    aria-label="Blanket with hand-sketched diagonal pencil shading"
   >
     <defs>
-      <!-- Clip the sketch to the outer square -->
-      <clipPath id="outerClip">
-        <rect x="5" y="5" width="390" height="390"/>
+      <clipPath id="outerRingClip">
+        <path fill-rule="evenodd" d="
+          M 5 5 H 395 V 395 H 5 Z
+          M 55 55 H 345 V 345 H 55 Z
+        "/>
       </clipPath>
 
-      <!-- Clip the sketch to the inner border -->
-      <clipPath id="innerClip">
-        <rect x="55" y="55" width="290" height="290"/>
+      <clipPath id="innerRingClip">
+        <path fill-rule="evenodd" d="
+          M 55 55 H 345 V 345 H 55 Z
+          M 105 105 H 295 V 295 H 105 Z
+        "/>
       </clipPath>
 
-      <!-- Clip the sketch to the center -->
       <clipPath id="centerClip">
         <rect x="105" y="105" width="190" height="190"/>
       </clipPath>
     </defs>
 
-    <!-- COLOR AREAS -->
-    <rect
-      id="outerShape"
-      x="5" y="5"
-      width="390" height="390"
-      fill="#653B36"
-    />
+    <!-- Colored sections -->
+    <rect id="outerShape"
+      x="5" y="5" width="390" height="390"
+      fill="#653B36"/>
 
-    <rect
-      id="innerShape"
-      x="55" y="55"
-      width="290" height="290"
-      fill="#B7512C"
-    />
+    <rect id="innerShape"
+      x="55" y="55" width="290" height="290"
+      fill="#B7512C"/>
 
-    <!-- Optional center fill -->
-    <!--
-    <rect
-      id="centerShape"
-      x="105" y="105"
-      width="190" height="190"
-      fill="#653B36"
-    />
-    -->
+    <rect id="centerShape"
+      x="105" y="105" width="190" height="190"
+      fill="#653B36"/>
 
-    <!-- HAND-DRAWN CONTINUOUS SQUIGGLE TEXTURE -->
-    <g
+    <!-- Generated pencil strokes go here -->
+    <g id="sketchLayer"
       fill="none"
       stroke="#FFFFFF"
       stroke-width="1.1"
       stroke-linecap="round"
       stroke-linejoin="round"
-      opacity="0.65"
-    >
-
-      <!-- Outer area: continuous back-and-forth stroke -->
-      <path
-        clip-path="url(#outerClip)"
-        d="
-          M 5,8
-          C 35,4 65,12 95,8
-          S 155,5 185,9 S 245,12 275,7 S 355,5 395,9
-          L 395,13
-          C 355,17 335,9 305,14 S 245,17 215,13
-          S 155,10 125,14 S 55,17 5,13
-          L 5,18
-          C 45,14 65,22 95,18 S 155,15 185,19
-          S 245,22 275,17 S 355,15 395,19
-          L 395,23
-          C 355,27 335,19 305,24 S 245,27 215,23
-          S 155,20 125,24 S 55,27 5,23
-          L 5,28
-          C 45,24 65,32 95,28 S 155,25 185,29
-          S 245,32 275,27 S 355,25 395,29
-          L 395,33
-          C 355,37 335,29 305,34 S 245,37 215,33
-          S 155,30 125,34 S 55,37 5,33
-          L 5,38
-          C 45,34 65,42 95,38 S 155,35 185,39
-          S 245,42 275,37 S 355,35 395,39
-          L 395,43
-          C 355,47 335,39 305,44 S 245,47 215,43
-          S 155,40 125,44 S 55,47 5,43
-          L 5,48
-          C 45,44 65,52 95,48 S 155,45 185,49
-          S 245,52 275,47 S 355,45 395,49
-          L 395,53
-          C 355,57 335,49 305,54 S 245,57 215,53
-          S 155,50 125,54 S 55,57 5,53
-          L 5,58
-          C 45,54 65,62 95,58 S 155,55 185,59
-          S 245,62 275,57 S 355,55 395,59
-          L 395,63
-          C 355,67 335,59 305,64 S 245,67 215,63
-          S 155,60 125,64 S 55,67 5,63
-          L 5,68
-          C 45,64 65,72 95,68 S 155,65 185,69
-          S 245,72 275,67 S 355,65 395,69
-          L 395,73
-          C 355,77 335,69 305,74 S 245,77 215,73
-          S 155,70 125,74 S 55,77 5,73
-          L 5,78
-          C 45,74 65,82 95,78 S 155,75 185,79
-          S 245,82 275,77 S 355,75 395,79
-          L 395,83
-          C 355,87 335,79 305,84 S 245,87 215,83
-          S 155,80 125,84 S 55,87 5,83
-          L 5,88
-          C 45,84 65,92 95,88 S 155,85 185,89
-          S 245,92 275,87 S 355,85 395,89
-          L 395,93
-          C 355,97 335,89 305,94 S 245,97 215,93
-          S 155,90 125,94 S 55,97 5,93
-          L 5,98
-          C 45,94 65,102 95,98 S 155,95 185,99
-          S 245,102 275,97 S 355,95 395,99
-          L 395,103
-          C 355,107 335,99 305,104 S 245,107 215,103
-          S 155,100 125,104 S 55,107 5,103
-          L 5,108
-          C 45,104 65,112 95,108 S 155,105 185,109
-          S 245,112 275,107 S 355,105 395,109
-          L 395,113
-          C 355,117 335,109 305,114 S 245,117 215,113
-          S 155,110 125,114 S 55,117 5,113
-          L 5,118
-          C 45,114 65,122 95,118 S 155,115 185,119
-          S 245,122 275,117 S 355,115 395,119
-          L 395,123
-          C 355,127 335,119 305,124 S 245,127 215,123
-          S 155,120 125,124 S 55,127 5,123
-          L 5,128
-          C 45,124 65,132 95,128 S 155,125 185,129
-          S 245,132 275,127 S 355,125 395,129
-          L 395,133
-          C 355,137 335,129 305,134 S 245,137 215,133
-          S 155,130 125,134 S 55,137 5,133
-          L 5,138
-          C 45,134 65,142 95,138 S 155,135 185,139
-          S 245,142 275,137 S 355,135 395,139
-          L 395,143
-          C 355,147 335,139 305,144 S 245,147 215,143
-          S 155,140 125,144 S 55,147 5,143
-          L 5,148
-          C 45,144 65,152 95,148 S 155,145 185,149
-          S 245,152 275,147 S 355,145 395,149
-          L 395,153
-          C 355,157 335,149 305,154 S 245,157 215,153
-          S 155,150 125,154 S 55,157 5,153
-          L 5,158
-          C 45,154 65,162 95,158 S 155,155 185,159
-          S 245,162 275,157 S 355,155 395,159
-          L 395,163
-          C 355,167 335,159 305,164 S 245,167 215,163
-          S 155,160 125,164 S 55,167 5,163
-          L 5,168
-          C 45,164 65,172 95,168 S 155,165 185,169
-          S 245,172 275,167 S 355,165 395,169
-          L 395,173
-          C 355,177 335,169 305,174 S 245,177 215,173
-          S 155,170 125,174 S 55,177 5,173
-          L 5,178
-          C 45,174 65,182 95,178 S 155,175 185,179
-          S 245,182 275,177 S 355,175 395,179
-          L 395,183
-          C 355,187 335,179 305,184 S 245,187 215,183
-          S 155,180 125,184 S 55,187 5,183
-          L 5,188
-          C 45,184 65,192 95,188 S 155,185 185,189
-          S 245,192 275,187 S 355,185 395,189
-          L 395,193
-          C 355,197 335,189 305,194 S 245,197 215,193
-          S 155,190 125,194 S 55,197 5,193
-          L 5,198
-          C 45,194 65,202 95,198 S 155,195 185,199
-          S 245,202 275,197 S 355,195 395,199
-          L 395,203
-          C 355,207 335,199 305,204 S 245,207 215,203
-          S 155,200 125,204 S 55,207 5,203
-          L 5,208
-          C 45,204 65,212 95,208 S 155,205 185,209
-          S 245,212 275,207 S 355,205 395,209
-          L 395,213
-          C 355,217 335,209 305,214 S 245,217 215,213
-          S 155,210 125,214 S 55,217 5,213
-          L 5,218
-          C 45,214 65,222 95,218 S 155,215 185,219
-          S 245,222 275,217 S 355,215 395,219
-          L 395,223
-          C 355,227 335,219 305,224 S 245,227 215,223
-          S 155,220 125,224 S 55,227 5,223
-          L 5,228
-          C 45,224 65,232 95,228 S 155,225 185,229
-          S 245,232 275,227 S 355,225 395,229
-          L 395,233
-          C 355,237 335,229 305,234 S 245,237 215,233
-          S 155,230 125,234 S 55,237 5,233
-          L 5,238
-          C 45,234 65,242 95,238 S 155,235 185,239
-          S 245,242 275,237 S 355,235 395,239
-          L 395,243
-          C 355,247 335,239 305,244 S 245,247 215,243
-          S 155,240 125,244 S 55,247 5,243
-          L 5,248
-          C 45,244 65,252 95,248 S 155,245 185,249
-          S 245,252 275,247 S 355,245 395,249
-          L 395,253
-          C 355,257 335,249 305,254 S 245,257 215,253
-          S 155,250 125,254 S 55,257 5,253
-          L 5,258
-          C 45,254 65,262 95,258 S 155,255 185,259
-          S 245,262 275,257 S 355,255 395,259
-          L 395,263
-          C 355,267 335,259 305,264 S 245,267 215,263
-          S 155,260 125,264 S 55,267 5,263
-          L 5,268
-          C 45,264 65,272 95,268 S 155,265 185,269
-          S 245,272 275,267 S 355,265 395,269
-          L 395,273
-          C 355,277 335,269 305,274 S 245,277 215,273
-          S 155,270 125,274 S 55,277 5,273
-          L 5,278
-          C 45,274 65,282 95,278 S 155,275 185,279
-          S 245,282 275,277 S 355,275 395,279
-          L 395,283
-          C 355,287 335,279 305,284 S 245,287 215,283
-          S 155,280 125,284 S 55,287 5,283
-          L 5,288
-          C 45,284 65,292 95,288 S 155,285 185,289
-          S 245,292 275,287 S 355,285 395,289
-          L 395,293
-          C 355,297 335,289 305,294 S 245,297 215,293
-          S 155,290 125,294 S 55,297 5,293
-          L 5,298
-          C 45,294 65,302 95,298 S 155,295 185,299
-          S 245,302 275,297 S 355,295 395,299
-          L 395,303
-          C 355,307 335,299 305,304 S 245,307 215,303
-          S 155,300 125,304 S 55,307 5,303
-          L 5,308
-          C 45,304 65,312 95,308 S 155,305 185,309
-          S 245,312 275,307 S 355,305 395,309
-          L 395,313
-          C 355,317 335,309 305,314 S 245,317 215,313
-          S 155,310 125,314 S 55,317 5,313
-          L 5,318
-          C 45,314 65,322 95,318 S 155,315 185,319
-          S 245,322 275,317 S 355,315 395,319
-          L 395,323
-          C 355,327 335,319 305,324 S 245,327 215,323
-          S 155,320 125,324 S 55,327 5,323
-          L 5,328
-          C 45,324 65,332 95,328 S 155,325 185,329
-          S 245,332 275,327 S 355,325 395,329
-          L 395,333
-          C 355,337 335,329 305,334 S 245,337 215,333
-          S 155,330 125,334 S 55,337 5,333
-          L 5,338
-          C 45,334 65,342 95,338 S 155,335 185,339
-          S 245,342 275,337 S 355,335 395,339
-          L 395,343
-          C 355,347 335,339 305,344 S 245,347 215,343
-          S 155,340 125,344 S 55,347 5,343
-          L 5,348
-          C 45,344 65,352 95,348 S 155,345 185,349
-          S 245,352 275,347 S 355,345 395,349
-          L 395,353
-          C 355,357 335,349 305,354 S 245,357 215,353
-          S 155,350 125,354 S 55,357 5,353
-          L 5,358
-          C 45,354 65,362 95,358 S 155,355 185,359
-          S 245,362 275,357 S 355,355 395,359
-          L 395,363
-          C 355,367 335,359 305,364 S 245,367 215,363
-          S 155,360 125,364 S 55,367 5,363
-          L 5,368
-          C 45,364 65,372 95,368 S 155,365 185,369
-          S 245,372 275,367 S 355,365 395,369
-          L 395,373
-          C 355,377 335,369 305,374 S 245,377 215,373
-          S 155,370 125,374 S 55,377 5,373
-          L 5,378
-          C 45,374 65,382 95,378 S 155,375 185,379
-          S 245,382 275,377 S 355,375 395,379
-          L 395,383
-          C 355,387 335,379 305,384 S 245,387 215,383
-          S 155,380 125,384 S 55,387 5,383
-          L 5,388
-          C 45,384 65,392 95,388 S 155,385 185,389
-          S 245,392 275,387 S 355,385 395,389
-        "
-      />
-
-    </g>
-
-    <!-- Clean, hand-drawn outlines on top -->
-    <g
-      fill="none"
-      stroke="#FFFFFF"
-      stroke-width="1"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      opacity="0.8"
-    >
-      <path d="M 7 7 Q 195 3 393 8 L 392 392 Q 201 396 7 393 Z"/>
-      <path d="M 57 57 Q 198 53 343 57 L 344 343 Q 200 346 56 343 Z"/>
+      opacity="0.65">
     </g>
   </svg>
 </div>
+
 
       </section>
 
@@ -643,6 +383,123 @@
           updateColor(name);
         });
       });
+
+    
+function generatePencilStroke({
+  x, y, width, height, spacing = 5, amplitude = 1.2
+}) {
+  // Sweep diagonally from bottom-left to top-right.
+  // Each pass turns around and returns on a roughly parallel line.
+  const points = [];
+  const diagonalLength = width + height;
+  const passes = Math.ceil(diagonalLength / spacing) + 2;
+
+  for (let i = 0; i < passes; i++) {
+    const offset = i * spacing - height;
+
+    // Parameterize a diagonal line and find where it
+    // intersects the rectangular section.
+    const intersections = [];
+
+    const addPoint = (px, py) => {
+      if (
+        px >= x - 0.001 && px <= x + width + 0.001 &&
+        py >= y - 0.001 && py <= y + height + 0.001
+      ) {
+        intersections.push([px, py]);
+      }
+    };
+
+    addPoint(x, y + height + offset);
+    addPoint(x + width, y + height + offset - width);
+    addPoint(x + offset + height, y + height);
+    addPoint(x + offset, y);
+
+    // Remove duplicate corner intersections.
+    const unique = intersections.filter((p, index, arr) =>
+      arr.findIndex(q =>
+        Math.abs(q[0] - p[0]) < 0.01 &&
+        Math.abs(q[1] - p[1]) < 0.01
+      ) === index
+    );
+
+    if (unique.length < 2) continue;
+
+    // Sort along the diagonal.
+    unique.sort((a, b) => a[0] - b[0] + a[1] - b[1]);
+
+    const start = unique[0];
+    const end = unique[unique.length - 1];
+
+    // Alternate direction to create one continuous zigzag.
+    if (i % 2 === 0) {
+      points.push([start, end]);
+    } else {
+      points.push([end, start]);
+    }
+  }
+
+  if (!points.length) return "";
+
+  let d = `M ${points[0][0][0]} ${points[0][0][1]}`;
+
+  points.forEach((segment, i) => {
+    const [a, b] = segment;
+
+    // Slight wobble makes the stroke look hand-drawn.
+    const wobble = Math.sin(i * 2.17) * amplitude;
+
+    d += ` L ${a[0] + wobble} ${a[1] - wobble}`;
+    d += ` L ${b[0] - wobble} ${b[1] + wobble}`;
+  });
+
+  return d;
+}
+
+function drawSketch() {
+  const layer = document.getElementById("sketchLayer");
+  layer.innerHTML = "";
+
+  const sections = [
+    {
+      clip: "outerRingClip",
+      x: 5, y: 5, width: 390, height: 390
+    },
+    {
+      clip: "innerRingClip",
+      x: 55, y: 55, width: 290, height: 290
+    },
+    {
+      clip: "centerClip",
+      x: 105, y: 105, width: 190, height: 190
+    }
+  ];
+
+  sections.forEach(section => {
+    const path = document.createElementNS(
+      "http://www.w3.org/2000/svg", "path"
+    );
+
+    path.setAttribute(
+      "d",
+      generatePencilStroke({
+        ...section,
+        spacing: 5,
+        amplitude: 1.1
+      })
+    );
+
+    path.setAttribute("clip-path", `url(#${section.clip})`);
+    path.setAttribute("stroke", "#FFFFFF");
+    path.setAttribute("stroke-width", "1.1");
+    path.setAttribute("fill", "none");
+
+    layer.appendChild(path);
+  });
+}
+
+drawSketch();
+
   </script>
 
 </body>

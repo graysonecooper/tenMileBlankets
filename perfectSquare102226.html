@@ -205,54 +205,43 @@
 
 
 <div class="preview-background">
-  <svg
-    id="blanket"
-    viewBox="0 0 400 400"
-    xmlns="http://www.w3.org/2000/svg"
-    role="img"
-    aria-label="Blanket with hand-sketched diagonal pencil shading"
-  >
+  <svg id="blanket" viewBox="0 0 400 400"
+       xmlns="http://www.w3.org/2000/svg"
+       role="img" aria-label="Blanket coloring preview">
+
     <defs>
-      <clipPath id="outerRingClip">
+      <!-- The outer ring, excluding the inner square -->
+      <clipPath id="outerClip" clipPathUnits="userSpaceOnUse">
         <path fill-rule="evenodd" d="
           M 5 5 H 395 V 395 H 5 Z
           M 55 55 H 345 V 345 H 55 Z
         "/>
       </clipPath>
 
-      <clipPath id="innerRingClip">
+      <!-- The inner ring, excluding the center -->
+      <clipPath id="innerClip" clipPathUnits="userSpaceOnUse">
         <path fill-rule="evenodd" d="
           M 55 55 H 345 V 345 H 55 Z
           M 105 105 H 295 V 295 H 105 Z
         "/>
       </clipPath>
 
-      <clipPath id="centerClip">
+      <clipPath id="centerClip" clipPathUnits="userSpaceOnUse">
         <rect x="105" y="105" width="190" height="190"/>
       </clipPath>
     </defs>
 
-    <!-- Colored sections -->
-    <rect id="outerShape"
-      x="5" y="5" width="390" height="390"
-      fill="#653B36"/>
+    <!-- White paper background -->
+    <rect width="400" height="400" fill="#FFFFFF"/>
 
-    <rect id="innerShape"
-      x="55" y="55" width="290" height="290"
-      fill="#B7512C"/>
+    <!-- Color is added by JavaScript only when selected -->
+    <g id="pencilLayer"></g>
 
-    <rect id="centerShape"
-      x="105" y="105" width="190" height="190"
-      fill="#653B36"/>
-
-    <!-- Generated pencil strokes go here -->
-    <g id="sketchLayer"
-      fill="none"
-      stroke="#FFFFFF"
-      stroke-width="1.1"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      opacity="0.65">
+    <!-- Section boundaries -->
+    <g fill="none" stroke="#777777" stroke-width="0.8">
+      <rect x="5" y="5" width="390" height="390"/>
+      <rect x="55" y="55" width="290" height="290"/>
+      <rect x="105" y="105" width="190" height="190"/>
     </g>
   </svg>
 </div>
@@ -385,120 +374,107 @@
       });
 
     
-function generatePencilStroke({
-  x, y, width, height, spacing = 5, amplitude = 1.2
-}) {
-  // Sweep diagonally from bottom-left to top-right.
-  // Each pass turns around and returns on a roughly parallel line.
+
+const NS = "http://www.w3.org/2000/svg";
+
+const regions = {
+  outer: {
+    clip: "outerClip",
+    x: 5, y: 5, width: 390, height: 390
+  },
+  inner: {
+    clip: "innerClip",
+    x: 55, y: 55, width: 290, height: 290
+  },
+  center: {
+    clip: "centerClip",
+    x: 105, y: 105, width: 190, height: 190
+  }
+};
+
+// Generate a single serpentine path, moving row by row.
+// The clipping path hides portions outside the selected region.
+function makePencilPath(region, spacing = 4, wobble = 1.5) {
+  const { x, y, width, height } = region;
   const points = [];
-  const diagonalLength = width + height;
-  const passes = Math.ceil(diagonalLength / spacing) + 2;
+  const rows = Math.ceil(height / spacing);
 
-  for (let i = 0; i < passes; i++) {
-    const offset = i * spacing - height;
+  for (let row = 0; row <= rows; row++) {
+    const py = y + Math.min(row * spacing, height);
+    const direction = row % 2 === 0 ? 1 : -1;
 
-    // Parameterize a diagonal line and find where it
-    // intersects the rectangular section.
-    const intersections = [];
+    // Slightly irregular pencil strokes.
+    const samples = Math.ceil(width / 5);
 
-    const addPoint = (px, py) => {
-      if (
-        px >= x - 0.001 && px <= x + width + 0.001 &&
-        py >= y - 0.001 && py <= y + height + 0.001
-      ) {
-        intersections.push([px, py]);
-      }
-    };
+    for (let j = 0; j <= samples; j++) {
+      const t = j / samples;
+      const actualT = direction === 1 ? t : 1 - t;
 
-    addPoint(x, y + height + offset);
-    addPoint(x + width, y + height + offset - width);
-    addPoint(x + offset + height, y + height);
-    addPoint(x + offset, y);
+      const px = x + actualT * width;
+      const wave = Math.sin(actualT * Math.PI * 18 + row * 0.8)
+                   * wobble;
 
-    // Remove duplicate corner intersections.
-    const unique = intersections.filter((p, index, arr) =>
-      arr.findIndex(q =>
-        Math.abs(q[0] - p[0]) < 0.01 &&
-        Math.abs(q[1] - p[1]) < 0.01
-      ) === index
-    );
-
-    if (unique.length < 2) continue;
-
-    // Sort along the diagonal.
-    unique.sort((a, b) => a[0] - b[0] + a[1] - b[1]);
-
-    const start = unique[0];
-    const end = unique[unique.length - 1];
-
-    // Alternate direction to create one continuous zigzag.
-    if (i % 2 === 0) {
-      points.push([start, end]);
-    } else {
-      points.push([end, start]);
+      points.push([px, py + wave]);
     }
   }
 
   if (!points.length) return "";
 
-  let d = `M ${points[0][0][0]} ${points[0][0][1]}`;
-
-  points.forEach((segment, i) => {
-    const [a, b] = segment;
-
-    // Slight wobble makes the stroke look hand-drawn.
-    const wobble = Math.sin(i * 2.17) * amplitude;
-
-    d += ` L ${a[0] + wobble} ${a[1] - wobble}`;
-    d += ` L ${b[0] - wobble} ${b[1] + wobble}`;
-  });
-
-  return d;
+  return points.map((p, i) =>
+    `${i === 0 ? "M" : "L"} ${p[0].toFixed(2)} ${p[1].toFixed(2)}`
+  ).join(" ");
 }
 
-function drawSketch() {
-  const layer = document.getElementById("sketchLayer");
-  layer.innerHTML = "";
+function drawRegion(name, color) {
+  const layer = document.getElementById("pencilLayer");
 
-  const sections = [
-    {
-      clip: "outerRingClip",
-      x: 5, y: 5, width: 390, height: 390
-    },
-    {
-      clip: "innerRingClip",
-      x: 55, y: 55, width: 290, height: 290
-    },
-    {
-      clip: "centerClip",
-      x: 105, y: 105, width: 190, height: 190
-    }
-  ];
+  // Remove only this region's previous drawing.
+  const previous = layer.querySelector(`[data-region="${name}"]`);
+  if (previous) previous.remove();
 
-  sections.forEach(section => {
-    const path = document.createElementNS(
-      "http://www.w3.org/2000/svg", "path"
-    );
+  // Blank means white paper: no pencil marks.
+  if (!color) return;
 
-    path.setAttribute(
-      "d",
-      generatePencilStroke({
-        ...section,
-        spacing: 5,
-        amplitude: 1.1
-      })
-    );
+  const region = regions[name];
 
-    path.setAttribute("clip-path", `url(#${section.clip})`);
-    path.setAttribute("stroke", "#FFFFFF");
-    path.setAttribute("stroke-width", "1.1");
-    path.setAttribute("fill", "none");
+  const group = document.createElementNS(NS, "g");
+  group.setAttribute("data-region", name);
+  group.setAttribute("clip-path", `url(#${region.clip})`);
 
-    layer.appendChild(path);
-  });
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", makePencilPath(region));
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", color);
+  path.setAttribute("stroke-width", "1.7");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+
+  group.appendChild(path);
+  layer.appendChild(group);
 }
 
-drawSketch();
+// Connect your existing dropdowns to the drawing.
+function updatePencil(name, selectorId) {
+  const color = document.getElementById(selectorId).value;
+  drawRegion(name, color);
+}
+
+document.getElementById("outerColor").addEventListener("change", () => {
+  updatePencil("outer", "outerColor");
+});
+
+document.getElementById("innerColor").addEventListener("change", () => {
+  updatePencil("inner", "innerColor");
+});
+
+document.getElementById("centerColor").addEventListener("change", () => {
+  updatePencil("center", "centerColor");
+});
+
+// Start with blank paper.
+drawRegion("outer", "");
+drawRegion("inner", "");
+drawRegion("center", "");
 
   </script>
 

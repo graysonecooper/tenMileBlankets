@@ -7,6 +7,18 @@
   <title>Blanket Color Preview</title>
 
   <style>
+    .preview-background {
+      background: #f7f3eb;
+      border-radius: 10px;
+      padding: 12px;
+    }
+    
+    #blanket {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    
     :root {
       --background: #f7f5f0;
       --text: #292724;
@@ -189,42 +201,188 @@
       <section class="preview-panel">
         <h2>Design your blanket</h2>
 
-        <div class="preview-background">
-          <svg
-            id="blanket"
-            viewBox="0 0 400 400"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Square blanket with an outer border,
-            an inner border, and a center fill"
-          >
-            <!-- Outer border -->
-            <rect
-              id="outerShape"
-              x="5" y="5"
-              width="390" height="390"
-              fill="#653B36"
-            />
 
-            <!-- Inner border -->
-            <rect
-              id="innerShape"
-              x="55" y="55"
-              width="290" height="290"
-              fill="#B7512C"
-            />
+<div class="preview-background">
+  <svg
+    id="blanket"
+    viewBox="0 0 400 400"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="Hand-drawn square blanket with an outer border and inner border"
+  >
+    <defs>
+      <!-- White pencil-like diagonal texture -->
+      <pattern
+        id="sketchTexture"
+        width="9"
+        height="9"
+        patternUnits="userSpaceOnUse"
+        patternTransform="rotate(-35)"
+      >
+        <path
+          d="M 0 0 L 0 9"
+          stroke="#FFFFFF"
+          stroke-width="1.1"
+          stroke-opacity="0.42"
+          fill="none"
+        />
+        <path
+          d="M 4 0 L 4 9"
+          stroke="#FFFFFF"
+          stroke-width="0.45"
+          stroke-opacity="0.22"
+          fill="none"
+        />
+      </pattern>
 
-            <!-- Center fill -->
-            <!--
-            <rect
-              id="centerShape"
-              x="105" y="105"
-              width="190" height="190"
-              fill="#653B36"
-            />
-            -->
-          </svg>
-        </div>
+      <!-- Slightly rough, hand-drawn square outlines -->
+      <filter
+        id="sketchRoughness"
+        x="-5%"
+        y="-5%"
+        width="110%"
+        height="110%"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.035"
+          numOctaves="2"
+          seed="8"
+          result="noise"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="1.5"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+    </defs>
+
+    <!-- COLOR LAYERS -->
+
+    <!-- Outer border -->
+    <rect
+      id="outerShape"
+      x="5"
+      y="5"
+      width="390"
+      height="390"
+      fill="#653B36"
+    />
+
+    <!-- Inner border -->
+    <rect
+      id="innerShape"
+      x="55"
+      y="55"
+      width="290"
+      height="290"
+      fill="#B7512C"
+    />
+
+    <!-- Center fill: uncomment if you want it -->
+    <!--
+    <rect
+      id="centerShape"
+      x="105"
+      y="105"
+      width="190"
+      height="190"
+      fill="#653B36"
+    />
+    -->
+
+    <!-- TRANSPARENT SKETCH OVERLAY -->
+    <g
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <!-- Pencil texture across the outer border -->
+      <rect
+        x="5"
+        y="5"
+        width="390"
+        height="390"
+        fill="url(#sketchTexture)"
+        stroke="none"
+      />
+
+      <!-- Pencil texture across the inner border -->
+      <rect
+        x="55"
+        y="55"
+        width="290"
+        height="290"
+        fill="url(#sketchTexture)"
+        stroke="none"
+      />
+
+      <!-- Outer hand-drawn outline -->
+      <path
+        d="M 7,7
+           Q 195,3 394,6
+           L 396,393
+           Q 201,397 6,394
+           Z"
+        stroke="#FFFFFF"
+        stroke-opacity="0.8"
+        stroke-width="1.1"
+        filter="url(#sketchRoughness)"
+      />
+
+      <!-- Secondary loose pencil outline -->
+      <path
+        d="M 10,9
+           L 392,9
+           Q 394,196 392,391
+           L 9,392
+           Q 7,200 10,9"
+        stroke="#FFFFFF"
+        stroke-opacity="0.38"
+        stroke-width="0.8"
+      />
+
+      <!-- Inner border outline -->
+      <path
+        d="M 56,56
+           Q 199,53 344,56
+           L 345,344
+           Q 201,347 55,344
+           Z"
+        stroke="#FFFFFF"
+        stroke-opacity="0.8"
+        stroke-width="1"
+        filter="url(#sketchRoughness)"
+      />
+
+      <!-- Secondary inner pencil outline -->
+      <path
+        d="M 59,58
+           L 342,58
+           L 342,341
+           L 58,342
+           Z"
+        stroke="#FFFFFF"
+        stroke-opacity="0.4"
+        stroke-width="0.75"
+      />
+
+      <!-- Small hand-drawn corner marks -->
+      <path
+        d="M 2,14 L 3,3 L 16,4
+           M 384,3 L 397,3 L 397,17
+           M 3,383 L 3,397 L 17,397
+           M 383,397 L 397,397 L 397,383"
+        stroke-opacity="0.65"
+        stroke-width="1.2"
+      />
+    </g>
+  </svg>
+</div>
 
       </section>
 

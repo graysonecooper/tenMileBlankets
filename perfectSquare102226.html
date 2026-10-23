@@ -335,20 +335,14 @@
       center: "#653B36"
     };
 
-    // Update a shape, its color swatch, and its hex label.
-    function updateColor(name) {
-      const selector = document.getElementById(name + "Color");
-      const color = selector.value;
+    // Update a color swatch.
+function updateColor(name) {
+  const selector = document.getElementById(name + "Color");
+  const color = selector.value;
 
-      document.getElementById(name + "Shape")
-        .setAttribute("fill", color);
-
-      document.getElementById(name + "Swatch")
-        .style.backgroundColor = color;
-
-    //  document.getElementById(name + "Hex")
-    //    .textContent = color.toUpperCase();
-    }
+  document.getElementById(name + "Swatch")
+    .style.backgroundColor = color;
+}
 
     // Listen for changes to all three selectors.
     ["outer", "inner", "center"].forEach(function(name) {
@@ -369,6 +363,7 @@
             defaults[name];
 
           updateColor(name);
+          updatePencil(name, name + "Color");
         });
       });
 
@@ -477,6 +472,11 @@ document.getElementById("innerColor").addEventListener("change", () =>
 document.getElementById("centerColor").addEventListener("change", () =>
   updatePencil("center", "centerColor")
 );
+
+    // Initialize the pencil strokes for all three sections.
+["outer", "inner", "center"].forEach(function(name) {
+  updatePencil(name, name + "Color");
+});
 
   </script>
 
